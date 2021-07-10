@@ -1,0 +1,185 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Treekey Blog</title>
+    <link>https://treekey.github.io/</link>
+    <description>Recent content on Treekey Blog</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>Copyright © 2008–2018, Steve Francia and the Hugo Authors; all rights reserved.</copyright>
+    <lastBuildDate>Wed, 07 Jul 2021 22:10:58 +0800</lastBuildDate><atom:link href="https://treekey.github.io/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>使用GoAccess分析網頁日誌</title>
+      <link>https://treekey.github.io/post/goaccess/</link>
+      <pubDate>Wed, 07 Jul 2021 22:10:58 +0800</pubDate>
+      
+      <guid>https://treekey.github.io/post/goaccess/</guid>
+      <description>
+        
+          &lt;p&gt;最近工作比較常接觸到網頁維護相關的內容，會常常去翻查 &lt;code&gt;apache2&lt;/code&gt; 的 &lt;code&gt;error.log&lt;/code&gt; 以及 &lt;code&gt;access.log&lt;/code&gt; ，其中 &lt;code&gt;access.log&lt;/code&gt; 包含了很多值得統計的資訊，像是哪個IP在哪個時間點用了什麼瀏覽器來存取你的頁面，因為紀錄有著既定的格式，所以平常是使用一些Linux指令&lt;code&gt;grep&lt;/code&gt;, &lt;code&gt;cut&lt;/code&gt;, &lt;code&gt;uniq&lt;/code&gt;等等來做一些簡單的統計，但就是缺乏圖表、及時統計等額外功能，而這些功能已經有許多現成工具或開源軟體提供了，像今天要介紹的&lt;code&gt;GoAccess&lt;/code&gt;就是其中一種，至於為什麼選擇他...因為google搜尋第一個就看到他，就找來用用看了，感覺還符合需求，也許之後會慢慢嘗試比較一下其他類似的工具。&lt;/p&gt;
+&lt;h2 id=&#34;什麼是goaccess&#34;&gt;什麼是GoAccess&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a href=&#34;https://goaccess.io/&#34;&gt;GoAccess&lt;/a&gt; 是一個用來分析網頁日誌的開源軟體，可以即時地分析網頁日誌，然後顯示在你的終端機或是輸出成網頁透過瀏覽器來互動。主要特色有:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;用 C 語言實作，標榜處理速度極快，可以即時處理網頁日誌&lt;/li&gt;
+&lt;li&gt;依賴少，只需要有&lt;code&gt;ncurses&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;可處理多種網頁日誌格式
+&lt;ul&gt;
+&lt;li&gt;Apache&lt;/li&gt;
+&lt;li&gt;Nginx&lt;/li&gt;
+&lt;li&gt;Amazon S3&lt;/li&gt;
+&lt;li&gt;類繁不及備載&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2 id=&#34;安裝goaccess&#34;&gt;安裝GoAccess&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;這邊使用的環境是&lt;code&gt;Ubuntu 20.04&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;首先準備好&lt;code&gt;GoAccess&lt;/code&gt;依賴的&lt;code&gt;ncurses&lt;/code&gt;，有這個才能在你的終端機顯示漂亮格式的結果，就如同有個文字版的使用者介面一樣。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ sudo apt-get install libncursesw5-dev
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;然後下載&lt;code&gt;GoAccess&lt;/code&gt;並解壓縮&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ wget https://tar.goaccess.io/goaccess-1.5.1.tar.gz
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;$ tar -xzvf goaccess-1.5.1.tar.gz
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;進入資料夾進行設定編譯參數&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; goaccess-1.5.1/
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;$ ./configure --enable-utf8 --enable-geoip&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;mmdb
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;由於開啟了&lt;code&gt;enable-geoip=mmdb&lt;/code&gt;，可能會因為缺少&lt;code&gt;libmaxminddb&lt;/code&gt;這個函式庫遇到錯誤，所以如果不需要將IP位址識別成地理位置這個功能的話，可以把選項拿掉重新設定編譯即可。而需要的朋友們可以到&lt;a href=&#34;https://github.com/maxmind/libmaxminddb&#34;&gt;這裡&lt;/a&gt;下載套件回來自行編譯，可以參考以下步驟:&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nv&#34;&gt;$wget&lt;/span&gt; https://github.com/maxmind/libmaxminddb/releases/download/1.6.0/libmaxminddb-1.6.0.tar.gz
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;$ tar xvf libmaxminddb-1.6.0.tar.gz
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;$ &lt;span class=&#34;nb&#34;&gt;cd&lt;/span&gt; libmaxminddb-1.6.0
+&lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;$ ./configure
+&lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;$ make
+&lt;span class=&#34;ln&#34;&gt;6&lt;/span&gt;$ make check
+&lt;span class=&#34;ln&#34;&gt;7&lt;/span&gt;$ sudo make install
+&lt;span class=&#34;ln&#34;&gt;8&lt;/span&gt;$ sudo ldconfig
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安裝後回到&lt;code&gt;GoAccess&lt;/code&gt;的資料夾，重新&lt;code&gt;configure&lt;/code&gt;，如果準備完成會顯示以下結果&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-fallback&#34; data-lang=&#34;fallback&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;Your build configuration:
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;  Prefix         : /usr/local
+&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;  Package        : goaccess
+&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;  Version        : 1.5.1
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;  Compiler flags :  -pthread
+&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;  Linker flags   : -lnsl -lncursesw -lmaxminddb -lpthread  
+&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;  UTF-8 support  : yes
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;  Dynamic buffer : no
+&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;  Geolocation    : GeoIP2
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;  Storage method : In-Memory with On-Disk Persistent Storage
+&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;  TLS/SSL        : no
+&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;  Bugs           : hello@goaccess.io
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;看到沒有錯誤就可以開始編譯及安裝了。&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ make
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;$ make install
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;h2 id=&#34;使用goaccess&#34;&gt;使用GoAccess&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;這邊介紹三種不同用法，可以根據需求自行選用&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;輸出至終端機顯示&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ goaccess access.log -c
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;ol start=&#34;2&#34;&gt;
+&lt;li&gt;輸出至靜態 HTML 頁面，產生的結果可以參考&lt;a href=&#34;https://rt.goaccess.io/?20210629172628&#34;&gt;官網Demo&lt;/a&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ goaccess access.log -o report.html --log-format&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;COMBINED
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;blockquote&gt;
+&lt;p&gt;這邊選擇的是&lt;code&gt;COMBINED&lt;/code&gt;格式，是因為我的&lt;code&gt;apache2&lt;/code&gt;設定裡指定了&lt;code&gt;access.log&lt;/code&gt;格式&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-apacheconf&#34; data-lang=&#34;apacheconf&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;CustomLog&lt;/span&gt; ${APACHE_LOG_DIR}/access.log combined 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/blockquote&gt;
+&lt;blockquote&gt;
+&lt;p&gt;而實際上格式的組成形式可以參考&lt;code&gt;/etc/apache2/apache2.conf&lt;/code&gt;裡的定義&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-apacheconf&#34; data-lang=&#34;apacheconf&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;LogFormat&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;%v:%p %h %l %u %t \&amp;#34;%r\&amp;#34; %&amp;gt;s %O \&amp;#34;%{Referer}i\&amp;#34; \&amp;#34;%{User-Agent}i\&amp;#34;&amp;#34;&lt;/span&gt; vhost_combined
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;LogFormat&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;%h %l %u %t \&amp;#34;%r\&amp;#34; %&amp;gt;s %O \&amp;#34;%{Referer}i\&amp;#34; \&amp;#34;%{User-Agent}i\&amp;#34;&amp;#34;&lt;/span&gt; combined
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;LogFormat&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;%h %l %u %t \&amp;#34;%r\&amp;#34; %&amp;gt;s %O&amp;#34;&lt;/span&gt; common
+&lt;span class=&#34;ln&#34;&gt;4&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;LogFormat&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;%{Referer}i -&amp;gt; %U&amp;#34;&lt;/span&gt; referer
+&lt;span class=&#34;ln&#34;&gt;5&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;LogFormat&lt;/span&gt; &lt;span class=&#34;s2&#34;&gt;&amp;#34;%{User-agent}i&amp;#34;&lt;/span&gt; agent
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;/blockquote&gt;
+&lt;ol start=&#34;3&#34;&gt;
+&lt;li&gt;即時並持續產生 HTML 頁面&lt;/li&gt;
+&lt;/ol&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-Shell&#34; data-lang=&#34;Shell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;$ goaccess access.log -o /var/www/html/report.html --log-format&lt;span class=&#34;o&#34;&gt;=&lt;/span&gt;COMBINED --real-time-html
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;跟第二種方法主要差別在於這個是會即時處理分析新的資料，如果不需要這麼即時，可以考慮配合&lt;code&gt;cron&lt;/code&gt;排程來定時更新產生的報表。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+    <item>
+      <title>Windows 套件管理工具 (Scoop, Chocolatey)</title>
+      <link>https://treekey.github.io/post/scoop/</link>
+      <pubDate>Wed, 04 Mar 2020 12:34:09 +0800</pubDate>
+      
+      <guid>https://treekey.github.io/post/scoop/</guid>
+      <description>
+        
+          &lt;p&gt;身為開發&lt;del&gt;環境毀滅&lt;/del&gt;者，常常會因為某些原因，需要在&lt;code&gt;Windows&lt;/code&gt;上安裝一些開發用的軟體。要自行去網路上尋找、下載，有時候還會找不到檔案，或是找到由可疑的非官方頁面所提供的安裝檔，下載回
+來還需要執行安裝檔案，通過繁瑣的下一步、下一步、下一步，還得定義安裝路徑。這時候就特別羨慕&lt;code&gt;Linux&lt;/code&gt;的&lt;code&gt;apt-get&lt;/code&gt;的使用方式，因為提供了&lt;code&gt;command-line&lt;/code&gt;的形式，可以很簡單的寫成腳本的形式，在腳本裡定義自己的需求列表，在新機建置環境時能一鍵完成，特別方便。&lt;/p&gt;
+&lt;p&gt;接下來會介紹兩個各有優缺點的&lt;code&gt;Windows&lt;/code&gt;套件管理工具，分別是&lt;code&gt;Chocolatey&lt;/code&gt;和&lt;code&gt;Scoop&lt;/code&gt;，都需要先安裝，然後就能使用提供的&lt;code&gt;command&lt;/code&gt;來搜尋、安裝、移除來管理其他套件了。筆者是在&lt;code&gt;Windows 10&lt;/code&gt;作業系統上測試的，如果是使用&lt;code&gt;Windows 7&lt;/code&gt;或是&lt;code&gt;Windows Server 2008&lt;/code&gt;這些比較舊的作業系統的使用者，請先安裝&lt;code&gt;Windows Management Framework 5.1&lt;/code&gt;以確保能執行&lt;code&gt;Windows PowerShell&lt;/code&gt;。&lt;/p&gt;
+&lt;h2 id=&#34;chocolatey&#34;&gt;Chocolatey&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a href=&#34;https://chocolatey.org/&#34;&gt;Chocolatey&lt;/a&gt; 安裝需要先以系統管理員權限打開&lt;code&gt;PowerShell&lt;/code&gt;&lt;/p&gt;
+&lt;blockquote&gt;
+&lt;p&gt;如何賦予權限?&lt;br&gt;
+(在開始列搜尋&lt;code&gt;Windows PowerShell&lt;/code&gt;，以右鍵點擊選擇&lt;code&gt;以系統管理員身分執行&lt;/code&gt;)&lt;br&gt;
+如果沒有權限，則安裝會失敗並顯示錯誤&lt;/p&gt;
+&lt;/blockquote&gt;
+&lt;p&gt;然後在&lt;code&gt;PowerShell&lt;/code&gt;輸入下列指令來安裝&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Set-ExecutionPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;Bypass&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Scope&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;Process&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-Force&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;no&#34;&gt;[System.Net.ServicePointManager]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SecurityProtocol&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;=&lt;/span&gt; &lt;span class=&#34;no&#34;&gt;[System.Net.ServicePointManager]&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;::&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;SecurityProtocol&lt;/span&gt; &lt;span class=&#34;o&#34;&gt;-bor&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;3072&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;;&lt;/span&gt; 
+&lt;span class=&#34;ln&#34;&gt;3&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;iex &lt;/span&gt;&lt;span class=&#34;p&#34;&gt;((&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;New-Object&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;System&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Net&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;WebClient&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;).&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;DownloadString&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;s1&#34;&gt;&amp;#39;https://chocolatey.org/install.ps1&amp;#39;&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;))&lt;/span&gt; 
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安裝後先執行&lt;code&gt;choco&lt;/code&gt;，如果安裝成功會顯示版號&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Chocolatey&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;v0&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;15&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;Please&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;run&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;choco -?&amp;#39;&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;or&lt;/span&gt; &lt;span class=&#34;s1&#34;&gt;&amp;#39;choco &amp;lt;command&amp;gt; -?&amp;#39;&lt;/span&gt; &lt;span class=&#34;k&#34;&gt;for&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;help&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;menu&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;根據提示執行&lt;code&gt;chaco -?&lt;/code&gt;，可以進一步看到可使用的指令，以下列出簡單用法&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 安裝套件: choco install PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 以vscode為例&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;install&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vscode&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 移除套件: choco uninstall PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;uninstall&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vscode&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 檢查是否有套件可更新&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;outdated&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 更新套件: choco upgrade PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;upgrade&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vscode&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 搜尋套件: choco search PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vscode&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 確認套件資訊，像是版本、發佈日期、介紹等等: choco info PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;choco&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;info&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;vscode&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;透過&lt;code&gt;choco install&lt;/code&gt;的套件一般都會放在&lt;code&gt;C:\Program Files&lt;/code&gt;或&lt;code&gt;C:\Program Files (x86)&lt;/code&gt;之中，但也有些工具軟體會被放在&lt;code&gt;C:\Tools&lt;/code&gt; 。&lt;/p&gt;
+&lt;h2 id=&#34;scoop&#34;&gt;Scoop&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;&lt;a href=&#34;https://scoop.sh/&#34;&gt;Scoop&lt;/a&gt;的特色是安裝不需要權限&lt;/p&gt;
+&lt;p&gt;首先一樣用&lt;code&gt;PowerShell&lt;/code&gt;先允許執行來自遠端的指令碼&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;Set-ExecutionPolicy&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;RemoteSigned&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;-scope&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;CurrentUser&lt;/span&gt;
+&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;接著才能執行安裝指令&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt;1&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;iwr &lt;/span&gt;&lt;span class=&#34;n&#34;&gt;-useb&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;get&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt;&lt;span class=&#34;p&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;sh&lt;/span&gt; &lt;span class=&#34;p&#34;&gt;|&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;iex
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;安裝後可以直接輸入&lt;code&gt;scoop&lt;/code&gt;來確認是否安裝成功，若成功會顯示可用的相關指令，基本上用法跟&lt;code&gt;Chocolatey&lt;/code&gt;相去不遠&lt;/p&gt;
+&lt;div class=&#34;highlight&#34;&gt;&lt;pre class=&#34;chroma&#34;&gt;&lt;code class=&#34;language-powershell&#34; data-lang=&#34;powershell&#34;&gt;&lt;span class=&#34;ln&#34;&gt; 1&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 安裝套件: scoop install PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 2&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 以curl為例&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 3&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;install&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;curl
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 4&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 5&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 移除套件: scoop uninstall PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 6&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;uninstall&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;curl
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt; 7&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 8&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 檢查是否有套件可更新&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt; 9&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;status&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;10&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;11&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 更新套件: scoop update PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;12&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;update&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;curl
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;13&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;14&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 搜尋套件: scoop search PACKAGE_NAME&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;15&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;search&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;curl
+&lt;/span&gt;&lt;span class=&#34;ln&#34;&gt;16&lt;/span&gt;&lt;span class=&#34;nb&#34;&gt;&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;17&lt;/span&gt;&lt;span class=&#34;c&#34;&gt;# 確認套件資訊，像是版本、License&lt;/span&gt;
+&lt;span class=&#34;ln&#34;&gt;18&lt;/span&gt;&lt;span class=&#34;n&#34;&gt;scoop&lt;/span&gt; &lt;span class=&#34;n&#34;&gt;info&lt;/span&gt; &lt;span class=&#34;nb&#34;&gt;curl
+&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;&lt;p&gt;透過&lt;code&gt;scoop install&lt;/code&gt;的套件一般都會放在&lt;code&gt;C:\Users\&amp;lt;YOUR_USER_NAME&amp;gt;\scoop&lt;/code&gt;&lt;/p&gt;
+&lt;h2 id=&#34;結論&#34;&gt;結論&lt;/h2&gt;
+&lt;hr&gt;
+&lt;p&gt;從安裝跟使用方式來看，上述兩種管理工具看起來差不多，真要比較的話，&lt;code&gt;Chocolatey&lt;/code&gt;提供的&lt;code&gt;GUI&lt;/code&gt;套件較多，而且因為是用管理員權限去管理套件，因此套件間的相依性都幫我們處理掉了，所以很適合一般沒有程式開發背景的使用者。而&lt;code&gt;Scoop&lt;/code&gt;雖然提供的GUI套件相對來說沒那麼多，但是安裝的套件被限定在你的使用者帳戶中，且被放在統一的目錄裡，避免了路徑汙染，但有些依賴性較強的套件在安裝上就需要額外的配置動作才能完成安裝。因此對有點程式背景的我來說，首選會是&lt;code&gt;Scoop&lt;/code&gt;，真的不行或是想懶了才會改用&lt;code&gt;Chocolatey&lt;/code&gt;。&lt;/p&gt;
+        
+      </description>
+    </item>
+    
+  </channel>
+</rss>
