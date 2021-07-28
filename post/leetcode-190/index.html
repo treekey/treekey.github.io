@@ -1,8 +1,8 @@
 
 <!DOCTYPE html>
-<html lang="en" data-figures="">
+<html lang="en" data-figures="true" class="page">
   <head>
-<title>Tags | Treekey Blog</title>
+<title>Leetcode 190 Reverse Bits (Easy) | Treekey Blog</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,21 +17,20 @@
 <meta property="og:locale" content="en" />
 
 <meta property="og:type" content="article">
-<meta name="description" content="">
+<meta name="description" content="Article description.">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="">
-<meta name="twitter:title" content="Tags" />
-<meta property="og:url" content="https://treekey.github.io/tags/" />
-<meta property="og:title" content="Tags" />
-<meta property="og:description" content="" />
+<meta name="twitter:title" content="Leetcode 190 Reverse Bits (Easy)" />
+<meta property="og:url" content="https://treekey.github.io/post/leetcode-190/" />
+<meta property="og:title" content="Leetcode 190 Reverse Bits (Easy)" />
+<meta property="og:description" content="Article description." />
 <meta property="og:image" content="https://treekey.github.io/images/thumbnail.png" />
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://treekey.github.io/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://treekey.github.io/icons/favicon-32x32.png">
 <link rel="manifest" href="https://treekey.github.io/icons/site.webmanifest">
 
-<link rel="canonical" href="https://treekey.github.io/tags/">
-<link rel="alternate" type="application/rss+xml" href="https://treekey.github.io/tags/index.xml" title="Treekey Blog" />
+<link rel="canonical" href="https://treekey.github.io/post/leetcode-190/">
 
     
 
@@ -48,8 +47,9 @@
   
   
     
+    
   
-  <body data-code="7" data-lines="false" id="documentTop">
+  <body data-code="15" data-lines="false" id="documentTop">
 
 <header class="nav_header" >
   <nav class="nav"><a href='https://treekey.github.io/' class="nav_brand nav_item" title="Treekey Blog">Treekey Blog
@@ -81,32 +81,28 @@
 </header>
 
     <main>
-
+  
 <div class="grid-inverse wrap content">
-  <ul class="posts" id="posts">
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/golang/" title="GOLANG">GOLANG</a>
-      </h3>
-      
+  <article class="post_content">
+    <h1 class="post_title">Leetcode 190 Reverse Bits (Easy)</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
 </svg></span>
     <span class="post_date">
       Jul 28, 2021</span>
-    <span class="post_time"> · 0 min read</span>
+    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://treekey.github.io/tags/golang' title="GOLANG" class="post_tag button button_translucent">GOLANG
+        </a>
+    </span>
     <span class="page_only">&nbsp;·
   <div class="post_share">
     Share on:
-    <a href="https://twitter.com/intent/tweet?text=GOLANG&url=https%3a%2f%2ftreekey.github.io%2ftags%2fgolang%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
+    <a href="https://twitter.com/intent/tweet?text=Leetcode%20190%20Reverse%20Bits%20%28Easy%29&url=https%3a%2f%2ftreekey.github.io%2fpost%2fleetcode-190%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fgolang%2f&t=GOLANG" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2fpost%2fleetcode-190%2f&t=Leetcode%20190%20Reverse%20Bits%20%28Easy%29" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
@@ -116,7 +112,7 @@
   <use xlink:href="#linkedin"></use>
 </svg>
     </a>
-    <a href="https://treekey.github.io/tags/golang/" title="Copy Link" class="link link_yank">
+    <a href="https://treekey.github.io/post/leetcode-190/" title="Copy Link" class="link link_yank">
       <svg class="icon">
   <use xlink:href="#copy"></use>
 </svg>
@@ -125,127 +121,58 @@
   </span>
   </div>
 
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/golang/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
+    
+    <p>題目是給一個<code>uint32</code>，要將他轉binary後反轉然後以<code>uint32</code>輸出。</p>
+<ol>
+<li>Example</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Input: n = 00000010100101000001111010011100
+<span class="ln">2</span>Output:    964176192 (00111001011110000010100101000000)
+<span class="ln">3</span>Explanation: The input binary string 00000010100101000001111010011100 represents the unsigned integer 43261596, so return 964176192 which its binary representation is 00111001011110000010100101000000.
+</code></pre></div><ol start="2">
+<li>Example</li>
+</ol>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Input: n = 11111111111111111111111111111101
+<span class="ln">2</span>Output:   3221225471 (10111111111111111111111111111111)
+<span class="ln">3</span>Explanation: The input binary string 11111111111111111111111111111101 represents the unsigned integer 4294967293, so return 3221225471 which its binary representation is 10111111111111111111111111111111.
+</code></pre></div><p>解法</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="kd">func</span> <span class="nf">reverseBits</span><span class="p">(</span><span class="nx">num</span> <span class="kt">uint32</span><span class="p">)</span> <span class="kt">uint32</span> <span class="p">{</span>
+<span class="ln"> 2</span>	<span class="kd">var</span> <span class="nx">result</span> <span class="kt">uint32</span> <span class="p">=</span> <span class="mi">0</span>
+<span class="ln"> 3</span>	<span class="k">for</span> <span class="nx">i</span><span class="o">:=</span><span class="mi">0</span><span class="p">;</span> <span class="nx">i</span> <span class="p">&lt;</span> <span class="mi">32</span><span class="p">;</span> <span class="nx">i</span><span class="o">++</span> <span class="p">{</span>
+<span class="ln"> 4</span>		<span class="k">if</span> <span class="nx">i</span> <span class="p">&gt;</span> <span class="mi">0</span> <span class="p">{</span>
+<span class="ln"> 5</span>			<span class="nx">result</span> <span class="o">&lt;&lt;=</span> <span class="mi">1</span>
+<span class="ln"> 6</span>		<span class="p">}</span>
+<span class="ln"> 7</span>		
+<span class="ln"> 8</span>		<span class="k">if</span> <span class="nx">num</span> <span class="o">&amp;</span> <span class="mi">1</span> <span class="o">==</span> <span class="mi">1</span> <span class="p">{</span>
+<span class="ln"> 9</span>			<span class="nx">result</span> <span class="o">+=</span> <span class="mi">1</span>	
+<span class="ln">10</span>		<span class="p">}</span>
+<span class="ln">11</span>		<span class="nx">num</span> <span class="o">&gt;&gt;=</span> <span class="mi">1</span>
+<span class="ln">12</span>	<span class="p">}</span>
+<span class="ln">13</span>	<span class="k">return</span> <span class="nx">result</span> 
+<span class="ln">14</span><span class="p">}</span>
+</code></pre></div><p>解題思路為將輸入的<code>num</code>從低位數開始逐個分解，每分解一個就放進變數<code>result</code>裡，且每次都會往左移位，執行到最後，最低位的值就被移到了最高位，滿足了反轉的需求。</p>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "treekey-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/web/" title="Web">Web</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Jul 7, 2021</span>
-    <span class="post_time"> · 0 min read</span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=Web&url=https%3a%2f%2ftreekey.github.io%2ftags%2fweb%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fweb%2f&t=Web" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://treekey.github.io/tags/web/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/web/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/windows/" title="Windows">Windows</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Mar 4, 2020</span>
-    <span class="post_time"> · 0 min read</span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=Windows&url=https%3a%2f%2ftreekey.github.io%2ftags%2fwindows%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fwindows%2f&t=Windows" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://treekey.github.io/tags/windows/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/windows/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-    <li>
-    </li>
-  </ul>
+  </article>
 <aside class="sidebar">
   <section class="sidebar_inner">
         <div class="author_header">
@@ -258,17 +185,11 @@
     <h2 class="mt-4">Featured Posts</h2>
     <ul>
       <li>
-        <a href="https://treekey.github.io/post/leetcode-190/" class="nav-link" title="Leetcode 190 Reverse Bits (Easy)">Leetcode 190 Reverse Bits (Easy)</a>
-      </li>
-      <li>
         <a href="https://treekey.github.io/post/leetcode-21/" class="nav-link" title="Leetcode 21 Merge Two Sorted Lists (Easy)">Leetcode 21 Merge Two Sorted Lists (Easy)</a>
       </li>
     </ul>
     <h2 class="mt-4">Recent Posts</h2>
     <ul class="flex-column">
-      <li>
-        <a href="https://treekey.github.io/post/leetcode-190/" class="nav-link" title="Leetcode 190 Reverse Bits (Easy)">Leetcode 190 Reverse Bits (Easy)</a>
-      </li>
       <li>
         <a href="https://treekey.github.io/post/leetcode-21/" class="nav-link" title="Leetcode 21 Merge Two Sorted Lists (Easy)">Leetcode 21 Merge Two Sorted Lists (Easy)</a>
       </li>
@@ -327,9 +248,8 @@
   </section>
 </aside>
 
+  
 </div>
-
-
     </main><svg width="0" height="0" class="hidden">
   <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
     <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>

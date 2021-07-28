@@ -1,8 +1,8 @@
 
 <!DOCTYPE html>
-<html lang="en" data-figures="">
+<html lang="en" data-figures="true" class="page">
   <head>
-<title>Tags | Treekey Blog</title>
+<title>Leetcode 21 Merge Two Sorted Lists (Easy) | Treekey Blog</title>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -17,21 +17,20 @@
 <meta property="og:locale" content="en" />
 
 <meta property="og:type" content="article">
-<meta name="description" content="">
+<meta name="description" content="Article description.">
 <meta name="twitter:card" content="summary" />
 <meta name="twitter:creator" content="">
-<meta name="twitter:title" content="Tags" />
-<meta property="og:url" content="https://treekey.github.io/tags/" />
-<meta property="og:title" content="Tags" />
-<meta property="og:description" content="" />
+<meta name="twitter:title" content="Leetcode 21 Merge Two Sorted Lists (Easy)" />
+<meta property="og:url" content="https://treekey.github.io/post/leetcode-21/" />
+<meta property="og:title" content="Leetcode 21 Merge Two Sorted Lists (Easy)" />
+<meta property="og:description" content="Article description." />
 <meta property="og:image" content="https://treekey.github.io/images/thumbnail.png" />
 
 <link rel="apple-touch-icon" sizes="180x180" href="https://treekey.github.io/icons/apple-touch-icon.png">
 <link rel="icon" type="image/png" sizes="32x32" href="https://treekey.github.io/icons/favicon-32x32.png">
 <link rel="manifest" href="https://treekey.github.io/icons/site.webmanifest">
 
-<link rel="canonical" href="https://treekey.github.io/tags/">
-<link rel="alternate" type="application/rss+xml" href="https://treekey.github.io/tags/index.xml" title="Treekey Blog" />
+<link rel="canonical" href="https://treekey.github.io/post/leetcode-21/">
 
     
 
@@ -48,8 +47,9 @@
   
   
     
+    
   
-  <body data-code="7" data-lines="false" id="documentTop">
+  <body data-code="30" data-lines="false" id="documentTop">
 
 <header class="nav_header" >
   <nav class="nav"><a href='https://treekey.github.io/' class="nav_brand nav_item" title="Treekey Blog">Treekey Blog
@@ -81,32 +81,28 @@
 </header>
 
     <main>
-
+  
 <div class="grid-inverse wrap content">
-  <ul class="posts" id="posts">
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/golang/" title="GOLANG">GOLANG</a>
-      </h3>
-      
+  <article class="post_content">
+    <h1 class="post_title">Leetcode 21 Merge Two Sorted Lists (Easy)</h1>
   <div class="post_meta">
     <span><svg class="icon">
   <use xlink:href="#calendar"></use>
 </svg></span>
     <span class="post_date">
-      Jul 28, 2021</span>
-    <span class="post_time"> · 0 min read</span>
+      Jul 27, 2021</span>
+    <span class="post_time"> · 1 min read</span><span>&nbsp;· <a href='https://treekey.github.io/tags/golang' title="GOLANG" class="post_tag button button_translucent">GOLANG
+        </a>
+    </span>
     <span class="page_only">&nbsp;·
   <div class="post_share">
     Share on:
-    <a href="https://twitter.com/intent/tweet?text=GOLANG&url=https%3a%2f%2ftreekey.github.io%2ftags%2fgolang%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
+    <a href="https://twitter.com/intent/tweet?text=Leetcode%2021%20Merge%20Two%20Sorted%20Lists%20%28Easy%29&url=https%3a%2f%2ftreekey.github.io%2fpost%2fleetcode-21%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#twitter"></use>
 </svg>
     </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fgolang%2f&t=GOLANG" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
+    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2fpost%2fleetcode-21%2f&t=Leetcode%2021%20Merge%20Two%20Sorted%20Lists%20%28Easy%29" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
       <svg class="icon">
   <use xlink:href="#facebook"></use>
 </svg>
@@ -116,7 +112,7 @@
   <use xlink:href="#linkedin"></use>
 </svg>
     </a>
-    <a href="https://treekey.github.io/tags/golang/" title="Copy Link" class="link link_yank">
+    <a href="https://treekey.github.io/post/leetcode-21/" title="Copy Link" class="link link_yank">
       <svg class="icon">
   <use xlink:href="#copy"></use>
 </svg>
@@ -125,127 +121,104 @@
   </span>
   </div>
 
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/golang/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
+    
+    <p>題目是將兩個已經排序後的list合而為一測資如下</p>
+<ul>
+<li>Example 1:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Input: l1 = [1,2,4], l2 = [1,3,4]
+<span class="ln">2</span>Output: [1,1,2,3,4,4]
+</code></pre></div><ul>
+<li>Example 2:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Input: l1 = [], l2 = []
+<span class="ln">2</span>Output: []
+</code></pre></div><ul>
+<li>Example 3:</li>
+</ul>
+<div class="highlight"><pre class="chroma"><code class="language-fallback" data-lang="fallback"><span class="ln">1</span>Input: l1 = [], l2 = [0]
+<span class="ln">2</span>Output: [0]
+</code></pre></div><ul>
+<li>限制
+<ul>
+<li>The number of nodes in both lists is in the range [0, 50].</li>
+<li>-100 &lt;= Node.val &lt;= 100</li>
+<li>Both l1 and l2 are sorted in non-decreasing order.</li>
+</ul>
+</li>
+</ul>
+<p>沒什麼難度直接上code</p>
+<div class="highlight"><pre class="chroma"><code class="language-go" data-lang="go"><span class="ln"> 1</span><span class="cm">/**
+</span><span class="ln"> 2</span><span class="cm"> * Definition for singly-linked list.
+</span><span class="ln"> 3</span><span class="cm"> * type ListNode struct {
+</span><span class="ln"> 4</span><span class="cm"> *     Val int
+</span><span class="ln"> 5</span><span class="cm"> *     Next *ListNode
+</span><span class="ln"> 6</span><span class="cm"> * }
+</span><span class="ln"> 7</span><span class="cm"> */</span>
+<span class="ln"> 8</span><span class="kd">func</span> <span class="nf">mergeTwoLists</span><span class="p">(</span><span class="nx">l1</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">,</span> <span class="nx">l2</span> <span class="o">*</span><span class="nx">ListNode</span><span class="p">)</span> <span class="o">*</span><span class="nx">ListNode</span> <span class="p">{</span>
+<span class="ln"> 9</span>	<span class="nx">it1</span> <span class="o">:=</span> <span class="nx">l1</span>
+<span class="ln">10</span>	<span class="nx">it2</span> <span class="o">:=</span> <span class="nx">l2</span>
+<span class="ln">11</span>	<span class="kd">var</span> <span class="nx">p</span> <span class="nx">ListNode</span>
+<span class="ln">12</span>	<span class="nx">cur</span> <span class="o">:=</span> <span class="o">&amp;</span><span class="nx">p</span>
+<span class="ln">13</span>	<span class="k">for</span> <span class="nx">it1</span> <span class="o">!=</span> <span class="nx">it2</span> <span class="p">{</span>
+<span class="ln">14</span>		<span class="nx">choose1</span> <span class="o">:=</span> <span class="kc">false</span>
+<span class="ln">15</span>		<span class="k">if</span> <span class="nx">it1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">it2</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="ln">16</span>			<span class="k">if</span> <span class="nx">it1</span><span class="p">.</span><span class="nx">Val</span> <span class="p">&lt;</span> <span class="nx">it2</span><span class="p">.</span><span class="nx">Val</span> <span class="p">{</span>
+<span class="ln">17</span>				<span class="nx">choose1</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="ln">18</span>			<span class="p">}</span>
+<span class="ln">19</span>		<span class="p">}</span>
+<span class="ln">20</span>
+<span class="ln">21</span>		<span class="k">if</span> <span class="nx">it1</span> <span class="o">!=</span> <span class="kc">nil</span> <span class="o">&amp;&amp;</span> <span class="nx">it2</span> <span class="o">==</span> <span class="kc">nil</span> <span class="p">{</span>
+<span class="ln">22</span>			<span class="nx">choose1</span> <span class="p">=</span> <span class="kc">true</span>
+<span class="ln">23</span>		<span class="p">}</span>
+<span class="ln">24</span>
+<span class="ln">25</span>		<span class="k">if</span> <span class="nx">choose1</span> <span class="p">{</span>
+<span class="ln">26</span>			<span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">it1</span>
+<span class="ln">27</span>			<span class="nx">it1</span> <span class="p">=</span> <span class="nx">it1</span><span class="p">.</span><span class="nx">Next</span>
+<span class="ln">28</span>
+<span class="ln">29</span>		<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+<span class="ln">30</span>			<span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span> <span class="p">=</span> <span class="nx">it2</span>
+<span class="ln">31</span>			<span class="nx">it2</span> <span class="p">=</span> <span class="nx">it2</span><span class="p">.</span><span class="nx">Next</span>
+<span class="ln">32</span>		<span class="p">}</span>
+<span class="ln">33</span>		<span class="nx">cur</span> <span class="p">=</span> <span class="nx">cur</span><span class="p">.</span><span class="nx">Next</span>
+<span class="ln">34</span>	<span class="p">}</span>
+<span class="ln">35</span>
+<span class="ln">36</span>	<span class="k">return</span> <span class="nx">p</span><span class="p">.</span><span class="nx">Next</span>
+<span class="ln">37</span><span class="p">}</span>
+</code></pre></div><p>解題邏輯如下</p>
+<ul>
+<li>由於<code>l1</code>, <code>l2</code> 都排序過，所以用<code>it1</code>, <code>it2</code>分別指向各自最小的物件</li>
+<li>回傳的新List由小排到大，所以要比較<code>it1</code>, <code>it2</code>，取較小的，取過的則讓它指向各自列表的下一個</li>
+<li>由於每次新列表新增的物件只會取<code>l1</code>, <code>l2</code>其中一個，所以利用變數<code>choose1</code>來表示是否符合取<code>l1</code>的條件
+<ul>
+<li>當<code>it1</code>, <code>it2</code>都不是空的時候且<code>it1</code>較小，<code>choose1=true</code></li>
+<li>當<code>it2</code>為nil，表示<code>l2</code>所有物件都處理過了，所以只需要處理<code>l1</code>，因此<code>choose1=true</code></li>
+<li>其他狀況，都應該取<code>it2</code></li>
+</ul>
+</li>
+</ul>
+<div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "treekey-blog" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
 
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/web/" title="Web">Web</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Jul 7, 2021</span>
-    <span class="post_time"> · 0 min read</span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=Web&url=https%3a%2f%2ftreekey.github.io%2ftags%2fweb%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fweb%2f&t=Web" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://treekey.github.io/tags/web/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/web/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-      <li class="post_item">
-  <div class="excerpt">
-    <div class="excerpt_header">
-      <h3 class="post_link">
-        <a href="https://treekey.github.io/tags/windows/" title="Windows">Windows</a>
-      </h3>
-      
-  <div class="post_meta">
-    <span><svg class="icon">
-  <use xlink:href="#calendar"></use>
-</svg></span>
-    <span class="post_date">
-      Mar 4, 2020</span>
-    <span class="post_time"> · 0 min read</span>
-    <span class="page_only">&nbsp;·
-  <div class="post_share">
-    Share on:
-    <a href="https://twitter.com/intent/tweet?text=Windows&url=https%3a%2f%2ftreekey.github.io%2ftags%2fwindows%2f&tw_p=tweetbutton" class="twitter" title="Share on Twitter" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#twitter"></use>
-</svg>
-    </a>
-    <a href="https://www.facebook.com/sharer.php?u=https%3a%2f%2ftreekey.github.io%2ftags%2fwindows%2f&t=Windows" class="facebook" title="Share on Facebook" target="_blank" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#facebook"></use>
-</svg>
-    </a>
-    <a href="#linkedinshare" id = "linkedinshare" class="linkedin" title="Share on LinkedIn" rel="nofollow">
-      <svg class="icon">
-  <use xlink:href="#linkedin"></use>
-</svg>
-    </a>
-    <a href="https://treekey.github.io/tags/windows/" title="Copy Link" class="link link_yank">
-      <svg class="icon">
-  <use xlink:href="#copy"></use>
-</svg>
-    </a>
-  </div>
-  </span>
-  </div>
-
-    </div>
-      <div class="excerpt_footer">
-        <div>
-          <p class="pale">
-            
-          </p>
-          <a href="https://treekey.github.io/tags/windows/" title="Read More" class="excerpt_more button">Read More</a>
-        </div>
-      </div>
-    </div>
-  </li>
-
-    <li>
-    </li>
-  </ul>
+  </article>
 <aside class="sidebar">
   <section class="sidebar_inner">
         <div class="author_header">
@@ -260,17 +233,11 @@
       <li>
         <a href="https://treekey.github.io/post/leetcode-190/" class="nav-link" title="Leetcode 190 Reverse Bits (Easy)">Leetcode 190 Reverse Bits (Easy)</a>
       </li>
-      <li>
-        <a href="https://treekey.github.io/post/leetcode-21/" class="nav-link" title="Leetcode 21 Merge Two Sorted Lists (Easy)">Leetcode 21 Merge Two Sorted Lists (Easy)</a>
-      </li>
     </ul>
     <h2 class="mt-4">Recent Posts</h2>
     <ul class="flex-column">
       <li>
         <a href="https://treekey.github.io/post/leetcode-190/" class="nav-link" title="Leetcode 190 Reverse Bits (Easy)">Leetcode 190 Reverse Bits (Easy)</a>
-      </li>
-      <li>
-        <a href="https://treekey.github.io/post/leetcode-21/" class="nav-link" title="Leetcode 21 Merge Two Sorted Lists (Easy)">Leetcode 21 Merge Two Sorted Lists (Easy)</a>
       </li>
       <li>
         <a href="https://treekey.github.io/post/password-hash/" class="nav-link" title="Password Hash">Password Hash</a>
@@ -327,9 +294,8 @@
   </section>
 </aside>
 
+  
 </div>
-
-
     </main><svg width="0" height="0" class="hidden">
   <symbol viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg" id="facebook">
     <path d="M437 0H75C33.648 0 0 33.648 0 75v362c0 41.352 33.648 75 75 75h151V331h-60v-90h60v-61c0-49.629 40.371-90 90-90h91v90h-91v61h91l-15 90h-76v181h121c41.352 0 75-33.648 75-75V75c0-41.352-33.648-75-75-75zm0 0"></path>
